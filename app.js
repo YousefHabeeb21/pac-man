@@ -1,4 +1,4 @@
-import { subscriptionKey, region } from './config.js'; 
+// import { subscriptionKey, region } from './config.js'; 
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -553,27 +553,78 @@ document.addEventListener("DOMContentLoaded", () => {
     
 
 
-  function initializeMicrophone() {
+  // function initializeMicrophone() {
 
-    const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey, region);
+  //   const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey, region);
 
-    speechConfig.speechRecognitionLanguage = "en-US"; 
-    speechConfig.setProperty(SpeechSDK.PropertyId.SpeechServiceConnection_RecoLanguage, "en-US");
+  //   speechConfig.speechRecognitionLanguage = "en-US"; 
+  //   speechConfig.setProperty(SpeechSDK.PropertyId.SpeechServiceConnection_RecoLanguage, "en-US");
 
 
-    const audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+  //   const audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
 
-    const recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+  //   const recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
 
-    recognizer.recognizing = (s, e) => {
-      if (e.result.reason === SpeechSDK.ResultReason.RecognizingSpeech) {
-        handleVoiceCommand(e.result.text); 
-        // console.log(e.result.text);
-      } else if (e.result.reason === SpeechSDK.ResultReason.NoMatch) {
-        console.log("No speech recognized.");
-      }
-    };
+  //   recognizer.recognizing = (s, e) => {
+  //     if (e.result.reason === SpeechSDK.ResultReason.RecognizingSpeech) {
+  //       handleVoiceCommand(e.result.text); 
+  //       // console.log(e.result.text);
+  //     } else if (e.result.reason === SpeechSDK.ResultReason.NoMatch) {
+  //       console.log("No speech recognized.");
+  //     }
+  //   };
       
-    recognizer.startContinuousRecognitionAsync();
+  //   recognizer.startContinuousRecognitionAsync();
+  // }
+
+
+  let isListening = false; 
+function initializeMicrophone() {
+  if (isListening) return;
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    console.error("Browser does not support Speech API");
+    return;
   }
+
+  const recognizer = new SpeechRecognition();
+
+  recognizer.lang = "en-US";
+  recognizer.interimResults = true; 
+  recognizer.continuous = true;     
+
+  recognizer.onresult = (event) => {
+    const lastResultIndex = event.results.length - 1;
+    const text = event.results[lastResultIndex][0].transcript;
+    handleVoiceCommand(text);
+  };
+
+  recognizer.onerror = (event) => {
+    if (event.error === 'not-allowed') {
+      recognizer.onend = null; 
+      isListening = false;
+      console.error("Microphone blocked. Make sure you are using HTTPS or localhost.");
+    } else if (event.error === 'no-speech') {
+      console.log("No speech detected."); 
+    } else {
+      console.error("Speech Error:", event.error);
+    }
+  };
+
+  recognizer.onend = () => {
+    if (isListening) {
+      recognizer.start();
+    }
+  };
+
+  try {
+    recognizer.start();
+    isListening = true;
+    console.log("Microphone started.");
+  } catch (err) {
+    console.error("Failed to start:", err);
+  }
+}
 });

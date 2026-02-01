@@ -1,17 +1,7 @@
 # PacMan Voice-Controlled Game
 
-Welcome to the PacMan Voice-Controlled Game! Control PacMan using your voice commands. This game is developed with HTML, CSS, and JavaScript, utilizing the Web Speech API for voice recognition.
+Welcome to the PacMan Voice-Controlled Game! Control PacMan using your voice commands. 
 
-
-## Setup
-1. Install the Live Server extension in Visual Studio Code.
-2. Open the project folder in Visual Studio Code.
-3. Click the "Go Live" button in the bottom right corner of Visual Studio Code.
-4. Click on the screen once with the mouse to enable the microphone (due to web browser policy).
-5. Ensure your microphone is enabled for voice commands.
-
-## Configuration
-Before starting the game, make sure that the `config.js` file is present in the project root. This file contains the key for the voice recognition to function correctly. If the `config.js` file is missing, the voice recognition feature will not work.
 
 ## Voice Commands
 The game recognizes the following voice commands:
