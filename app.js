@@ -543,14 +543,19 @@ document.addEventListener("DOMContentLoaded", () => {
       if (element) element.innerText = text;
     }
 
-    document.addEventListener("click", () => {
-      initializeMicrophone();
-      // startGame();
-      // togglePause(1);
-    });
+    // document.addEventListener("click", () => {
+    //   initializeMicrophone();
+    //   // startGame();
+    //   // togglePause(1);
+    // });
 
-  
-    
+    function handleInteraction() {
+      initializeMicrophone();
+    }
+
+    document.addEventListener("click", handleInteraction);
+    document.addEventListener("touchend", handleInteraction);
+      
 
 
   // function initializeMicrophone() {
